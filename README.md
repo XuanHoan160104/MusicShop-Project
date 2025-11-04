@@ -1,6 +1,3 @@
-Chào bạn, đây là một file `README.md` (dùng ngôn ngữ Markdown) chi tiết cho dự án MusicShop của bạn, bạn có thể copy nội dung này và dán vào file `README.md` trên GitHub.
-
------
 
 # 🎸 Dự án Website Bán Nhạc Cụ (MusicShop)
 
