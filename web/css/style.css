@@ -1,0 +1,48 @@
+/* --- file: css/style.css --- */
+
+/* * 1. Tùy chỉnh màu sắc Bootstrap 
+ * (Đây là các màu chủ đạo trong ảnh mẫu của bạn)
+ */
+:root {
+    --primary-orange: #f58220; /* Màu cam */
+    --primary-blue: #004a99;   /* Màu xanh đậm */
+}
+
+/* Đổi màu các nút "primary" (Mặc định là xanh dương) thành màu cam */
+.btn-primary {
+    background-color: var(--primary-orange);
+    border-color: var(--primary-orange);
+}
+.btn-primary:hover {
+    background-color: #e0751c; /* Cam đậm hơn khi hover */
+    border-color: #e0751c;
+}
+
+/* Đổi màu các link */
+a {
+    color: var(--primary-blue);
+    text-decoration: none; /* Bỏ gạch chân */
+}
+a:hover {
+    color: var(--primary-orange);
+    text-decoration: underline;
+}
+
+/* * 2. Tùy chỉnh Giao diện 
+ */
+
+/* Làm cho "Card" sản phẩm đẹp hơn */
+.card {
+    border: 1px solid #eee;
+    transition: box-shadow 0.3s ease; /* Thêm hiệu ứng đổ bóng khi hover */
+}
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Đảm bảo ảnh sản phẩm vừa vặn */
+.card-img-top {
+    width: 100%;
+    height: 200px; /* Đặt chiều cao cố định cho ảnh */
+    object-fit: cover; /* Giữ tỷ lệ ảnh, không bị méo */
+}
