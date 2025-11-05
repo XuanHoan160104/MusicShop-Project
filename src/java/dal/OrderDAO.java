@@ -129,7 +129,7 @@ public class OrderDAO extends DBContext {
             try { if (connection != null) { connection.rollback(); } } catch (SQLException e) { Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, "Lỗi khi rollback tạo đơn hàng", e); }
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, "Lỗi SQL khi tạo đơn hàng", ex); return false;
         } finally {
-            // 9. Đóng tài nguyên và Bật lại auto-commit
+            // 9. Đóng tất cả tài nguyên và Bật lại auto-commit
              try { if (rs != null) rs.close(); } catch (SQLException e) { /* ignored */ } try { if (generatedKeys != null) generatedKeys.close(); } catch (SQLException e) { /* ignored */ } try { if (checkSt != null) checkSt.close(); } catch (SQLException e) { /* ignored */ } try { if (orderSt != null) orderSt.close(); } catch (SQLException e) { /* ignored */ } try { if (detailSt != null) detailSt.close(); } catch (SQLException e) { /* ignored */ } try { if (stockSt != null) stockSt.close(); } catch (SQLException e) { /* ignored */ }
             try { if (connection != null) { connection.setAutoCommit(true); } } catch (SQLException ex) { Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, "Lỗi khi bật lại autoCommit", ex); }
         }

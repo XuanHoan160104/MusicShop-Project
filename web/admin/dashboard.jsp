@@ -48,7 +48,7 @@
                         <div class="col-md-4">
                             <div class="card text-white bg-success">
                                 <div class="card-body">
-                                    <h5 class="card-title">Tổng Doanh thu (Đã giao)</h5>
+                                    <h5 class="card-title">Tổng Doanh Thu (Đã giao)</h5>
                                     <p class="card-text fs-3 fw-bold">
                                         <fmt:formatNumber value="${requestScope.totalRevenue}" type="currency" currencySymbol="đ"/>
                                     </p>
