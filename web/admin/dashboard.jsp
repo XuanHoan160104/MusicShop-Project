@@ -1,6 +1,7 @@
 <%--
     File: /admin/dashboard.jsp
-    ĐÃ SỬA: Thêm lại các thẻ Thống kê Doanh thu
+    ĐÃ SỬA: Cập nhật thẻ Thống kê (Doanh thu Tuần/Tháng)
+    ĐÃ SỬA: Sửa lỗi cú pháp </Giao>
 --%>
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -22,6 +23,17 @@
             .admin-sidebar .nav-link.active { color: #004a99; }
             .admin-sidebar .nav-link:hover { color: #f58220; }
             .table-hover tbody tr:hover { background-color: #f1f1f1; }
+            
+            /* Thêm CSS cho thẻ card khi là link */
+            .card-link {
+                display: block;
+                text-decoration: none;
+                transition: transform 0.2s ease-in-out;
+            }
+            .card-link:hover {
+                transform: translateY(-5px); /* Hiệu ứng nhấc lên */
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
         </style>
     </head>
     <body>
@@ -43,20 +55,36 @@
                         </div>
                     </div>
                     
-                    <%-- === PHẦN THỐNG KÊ (ĐÃ THÊM LẠI ĐẦY ĐỦ) === --%>
+                    <%-- === THAY THẾ KHỐI THỐNG KÊ CŨ BẰNG KHỐI NÀY === --%>
                     <div class="row my-4">
                         <div class="col-md-4">
-                            <div class="card text-white bg-success">
+                            <%-- Thẻ này là link dẫn đến trang Biểu đồ (chúng ta sẽ làm sau) --%>
+                            <a href="${pageContext.request.contextPath}/admin/report" class="card-link">
+                                <div class="card text-white bg-success h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Doanh thu Tháng này (Đã giao)</h5>
+                                        <p class="card-text fs-3 fw-bold">
+                                            <%-- Dùng biến 'monthlyRevenue' mới từ Servlet --%>
+                                            <fmt:formatNumber value="${requestScope.monthlyRevenue}" type="currency" currencySymbol="đ"/>
+                                        </p>
+                                        <small class="text-white-50">Bấm để xem chi tiết biểu đồ &raquo;</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card text-dark bg-info h-100">
                                 <div class="card-body">
-                                    <h5 class="card-title">Tổng Doanh Thu (Đã giao)</h5>
+                                    <h5 class="card-title">Doanh thu Tuần này (Đã giao)</h5>
                                     <p class="card-text fs-3 fw-bold">
-                                        <fmt:formatNumber value="${requestScope.totalRevenue}" type="currency" currencySymbol="đ"/>
+                                        <%-- Dùng biến 'weeklyRevenue' mới từ Servlet --%>
+                                        <fmt:formatNumber value="${requestScope.weeklyRevenue}" type="currency" currencySymbol="đ"/>
                                     </p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card text-dark bg-warning">
+                            <div class="card text-dark bg-warning h-100">
                                 <div class="card-body">
                                     <h5 class="card-title">Đơn hàng Chờ xử lý</h5>
                                     <p class="card-text fs-3 fw-bold">
@@ -65,18 +93,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card text-white bg-primary">
-                                <div class="card-body">
-                                    <h5 class="card-title">Tổng số Khách hàng</h5>
-                                    <p class="card-text fs-3 fw-bold">
-                                        ${requestScope.totalCustomers}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                    <%-- ========================================= --%>
+                    <%-- =============================================== --%>
 
                     <h3 class="mt-4">Quản lý Đơn hàng</h3>
                     
@@ -130,7 +148,10 @@
                                                     <select name="newStatus" class="form-select form-select-sm" style="width: 120px;">
                                                         <option value="Pending" ${o.status == 'Pending' ? 'selected' : ''}>Chờ xử lý</option>
                                                         <option value="Processing" ${o.status == 'Processing' ? 'selected' : ''}>Đang giao hàng</option>
-                                                        <option value="Shipped" ${o.status == 'Shipped' ? 'selected' : ''}>Đã giao</Giao></option>
+                                                        
+                                                        <%-- === SỬA LỖI CÚ PHÁP: </Giao> thành </option> === --%>
+                                                        <option value="Shipped" ${o.status == 'Shipped' ? 'selected' : ''}>Đã giao</option>
+                                                        
                                                         <option value="Cancelled" ${o.status == 'Cancelled' ? 'selected' : ''}>Hủy</option>
                                                     </select>
                                                     <button type="submit" class="btn btn-sm btn-primary ms-1">Cập nhật</button>

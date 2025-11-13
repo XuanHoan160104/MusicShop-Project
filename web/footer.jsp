@@ -21,7 +21,9 @@
         </div>
         <div class="col-md-4">
             <h5>Mạng xã hội</h5>
-            <p>Theo dõi chúng tôi trên...</p>
+            <p>Nguyễn Xuân Hoàn<br>
+               Nguyễn Chí Dũng<br>
+               Bùi Hoàng Hiệp</p>
         </div>
     </div>
     <div class="text-center mt-3">

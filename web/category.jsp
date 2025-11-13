@@ -1,7 +1,7 @@
 <%--
     File: category.jsp
+    ĐÃ SỬA: Sửa lại logic Phân trang (hiển thị cho cả Danh mục VÀ Tìm kiếm)
     ĐÃ SỬA: Thêm logic kiểm tra tồn kho ("Đã hết hàng")
-    ĐÃ SỬA: Hiển thị Phân trang cho cả Tìm kiếm và Danh mục
 --%>
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -62,9 +62,12 @@
                                             <fmt:formatNumber value = "${p.price}" type = "currency" currencySymbol="đ"/>
                                         </p>
                                         
-                                        <%-- === SỬA Ở ĐÂY: Thêm logic kiểm tra tồn kho === --%>
+                                        <%-- Logic kiểm tra tồn kho --%>
                                         <c:choose>
-                                            <%-- Giả định p.stock_quantity đã được lấy từ DAO --%>
+                                            <%-- 
+                                                Đảm bảo ProductDAO (các hàm ...Paged) 
+                                                đã lấy về p.stock_quantity
+                                            --%>
                                             <c:when test="${p.stock_quantity > 0}">
                                                 <a href="${pageContext.request.contextPath}/detail?pid=${p.product_id}" class="btn btn-primary btn-sm">Xem chi tiết</a>
                                             </c:when>
@@ -72,7 +75,6 @@
                                                 <span class="btn btn-sm btn-outline-danger disabled">Đã hết hàng</span>
                                             </c:otherwise>
                                         </c:choose>
-                                        <%-- ========================================== --%>
                                     </div>
                                 </div>
                             </div>
@@ -90,18 +92,21 @@
                         </c:if>
                     </div>
 
-                    <%-- === SỬA Ở ĐÂY: Khối Phân trang (Pagination) === --%>
-                    <%-- Hiển thị nếu tổng số trang > 1 --%>
+                    <%-- === SỬA LẠI KHỐI PHÂN TRANG (PAGINATION) === --%>
+                    <%-- Chỉ hiển thị nếu có nhiều hơn 1 trang --%>
                     <c:if test="${requestScope.totalPages > 1}">
                         <nav aria-label="Page navigation">
                             <ul class="pagination justify-content-center">
                                 
                                 <%-- Nút Về Trang Trước (Previous) --%>
                                 <li class="page-item ${requestScope.currentPage == 1 ? 'disabled' : ''}">
+                                    <%-- Dùng c:choose để tạo link đúng --%>
                                     <c:choose>
+                                        <%-- Link cho Tìm kiếm --%>
                                         <c:when test="${not empty requestScope.searchKeyword}">
                                             <a class="page-link" href="${pageContext.request.contextPath}/search?searchQuery=${requestScope.searchKeyword}&page=${requestScope.currentPage - 1}">Trước</a>
                                         </c:when>
+                                        <%-- Link cho Danh mục --%>
                                         <c:otherwise>
                                             <a class="page-link" href="${pageContext.request.contextPath}/category?cid=${requestScope.currentCid}&page=${requestScope.currentPage - 1}">Trước</a>
                                         </c:otherwise>
@@ -112,9 +117,11 @@
                                 <c:forEach begin="1" end="${requestScope.totalPages}" var="i">
                                     <li class="page-item ${requestScope.currentPage == i ? 'active' : ''}">
                                         <c:choose>
+                                            <%-- Link cho Tìm kiếm --%>
                                             <c:when test="${not empty requestScope.searchKeyword}">
                                                 <a class="page-link" href="${pageContext.request.contextPath}/search?searchQuery=${requestScope.searchKeyword}&page=${i}">${i}</a>
                                             </c:when>
+                                            <%-- Link cho Danh mục --%>
                                             <c:otherwise>
                                                 <a class="page-link" href="${pageContext.request.contextPath}/category?cid=${requestScope.currentCid}&page=${i}">${i}</a>
                                             </c:otherwise>
@@ -125,9 +132,11 @@
                                 <%-- Nút Sang Trang Sau (Next) --%>
                                 <li class="page-item ${requestScope.currentPage == requestScope.totalPages ? 'disabled' : ''}">
                                     <c:choose>
+                                        <%-- Link cho Tìm kiếm --%>
                                         <c:when test="${not empty requestScope.searchKeyword}">
-                                            <a class_ ="page-link" href="${pageContext.request.contextPath}/search?searchQuery=${requestScope.searchKeyword}&page=${requestScope.currentPage + 1}">Sau</a>
+                                            <a class="page-link" href="${pageContext.request.contextPath}/search?searchQuery=${requestScope.searchKeyword}&page=${requestScope.currentPage + 1}">Sau</a>
                                         </c:when>
+                                        <%-- Link cho Danh mục --%>
                                         <c:otherwise>
                                             <a class="page-link" href="${pageContext.request.contextPath}/category?cid=${requestScope.currentCid}&page=${requestScope.currentPage + 1}">Sau</a>
                                         </c:otherwise>

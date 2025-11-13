@@ -33,7 +33,7 @@ public class HomeServlet extends HttpServlet {
         // === ĐÃ CẬP NHẬT TẠI ĐÂY ===
         // 2. Lấy danh sách sản phẩm nổi bật
         ProductDAO productDAO = new ProductDAO();
-        List<Product> featuredList = productDAO.getFeaturedProducts();
+        List<Product> featuredList = productDAO.getBestSellingProducts();
         // ==========================
 
         // 3. Đẩy 2 danh sách (Model) sang (View)

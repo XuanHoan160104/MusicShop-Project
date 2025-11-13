@@ -84,13 +84,24 @@ public class ProductDAO extends DBContext {
         return null;
     }
 
+    // === THAY THẾ HÀM getFeaturedProducts() CŨ BẰNG HÀM MỚI NÀY ===
+
     /**
-     * Lấy các sản phẩm nổi bật (cho Trang chủ)
+     * Lấy các sản phẩm nổi bật (là 8 sản phẩm BÁN CHẠY NHẤT)
      * @return một danh sách (List) các đối tượng Product
      */
-    public List<Product> getFeaturedProducts() {
+    public List<Product> getBestSellingProducts() {
         List<Product> list = new ArrayList<>();
-        String sql = "SELECT * FROM Products LIMIT 8";
+        // Câu SQL này JOIN bảng Products và OrderDetails,
+        // đếm tổng số lượng (quantity) đã bán của mỗi sản phẩm,
+        // sắp xếp giảm dần, và lấy 8 sản phẩm hàng đầu.
+        String sql = "SELECT p.*, SUM(od.quantity) AS total_sold " +
+                     "FROM Products p " +
+                     "JOIN OrderDetails od ON p.product_id = od.product_id " +
+                     "GROUP BY p.product_id " +
+                     "ORDER BY total_sold DESC " + // Sắp xếp theo tổng số bán được
+                     "LIMIT 8"; // Lấy 8 sản phẩm bán chạy nhất
+
         PreparedStatement st = null;
         ResultSet rs = null;
         try {
@@ -102,11 +113,12 @@ public class ProductDAO extends DBContext {
                 p.setName(rs.getString("name"));
                 p.setPrice(rs.getDouble("price"));
                 p.setImage_url(rs.getString("image_url"));
-                p.setStock_quantity(rs.getInt("stock_quantity")); // <-- SỬA Ở ĐÂY: Thêm dòng này
+                p.setStock_quantity(rs.getInt("stock_quantity")); // Lấy tồn kho
+                p.setCategory_id(rs.getInt("category_id"));
                 list.add(p);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, "Lỗi khi getFeaturedProducts", ex);
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, "Lỗi khi getBestSellingProducts", ex);
         } finally {
             try { if (rs != null) rs.close(); } catch (SQLException e) { /* ignored */ }
             try { if (st != null) st.close(); } catch (SQLException e) { /* ignored */ }
@@ -116,7 +128,7 @@ public class ProductDAO extends DBContext {
 
     // === CÁC HÀM CHO QUẢN LÝ SẢN PHẨM (ADMIN) ===
     // (Giữ nguyên các hàm getAllProducts, insertProduct, updateProduct, deleteProduct...)
-    public List<Product> getAllProducts() { /* ... */ 
+    public List<Product> getAllProducts() { 
         List<Product> list = new ArrayList<>(); String sql = "SELECT * FROM Products ORDER BY product_id DESC"; PreparedStatement st = null; ResultSet rs = null;
         try { st = connection.prepareStatement(sql); rs = st.executeQuery();
             while (rs.next()) { Product p = new Product(); p.setProduct_id(rs.getInt("product_id")); p.setName(rs.getString("name")); p.setDescription(rs.getString("description")); p.setPrice(rs.getDouble("price")); p.setImage_url(rs.getString("image_url")); p.setStock_quantity(rs.getInt("stock_quantity")); p.setCategory_id(rs.getInt("category_id")); list.add(p); }
@@ -124,19 +136,19 @@ public class ProductDAO extends DBContext {
         } finally { try { if (rs != null) rs.close(); } catch (SQLException e) { /* ignored */ } try { if (st != null) st.close(); } catch (SQLException e) { /* ignored */ } }
         return list;
     }
-    public void insertProduct(String name, String description, double price, String imageUrl, int stock, int categoryId) { /* ... */ 
+    public void insertProduct(String name, String description, double price, String imageUrl, int stock, int categoryId) { 
         String sql = "INSERT INTO Products (name, description, price, image_url, stock_quantity, category_id) VALUES (?, ?, ?, ?, ?, ?)"; PreparedStatement st = null;
         try { st = connection.prepareStatement(sql); st.setString(1, name); st.setString(2, description); st.setDouble(3, price); st.setString(4, imageUrl); st.setInt(5, stock); st.setInt(6, categoryId); st.executeUpdate();
         } catch (SQLException ex) { Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, "Lỗi khi insertProduct", ex);
         } finally {  try { if (st != null) st.close(); } catch (SQLException e) { /* ignored */ } }
     }
-    public void updateProduct(int id, String name, String description, double price, String imageUrl, int stock, int categoryId) { /* ... */ 
+    public void updateProduct(int id, String name, String description, double price, String imageUrl, int stock, int categoryId) { 
         String sql = "UPDATE Products SET name = ?, description = ?, price = ?, image_url = ?, stock_quantity = ?, category_id = ? WHERE product_id = ?"; PreparedStatement st = null;
         try { st = connection.prepareStatement(sql); st.setString(1, name); st.setString(2, description); st.setDouble(3, price); st.setString(4, imageUrl); st.setInt(5, stock); st.setInt(6, categoryId); st.setInt(7, id); st.executeUpdate();
         } catch (SQLException ex) { Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, "Lỗi khi updateProduct", ex);
         } finally {  try { if (st != null) st.close(); } catch (SQLException e) { /* ignored */ } }
     }
-    public void deleteProduct(int id) { /* ... */ 
+    public void deleteProduct(int id) { 
         String deleteOrderDetailsSQL = "DELETE FROM OrderDetails WHERE product_id = ?"; String deleteProductSQL = "DELETE FROM Products WHERE product_id = ?"; PreparedStatement st1 = null; PreparedStatement st2 = null;
         try { st1 = connection.prepareStatement(deleteOrderDetailsSQL); st1.setInt(1, id); st1.executeUpdate();
             st2 = connection.prepareStatement(deleteProductSQL); st2.setInt(1, id); st2.executeUpdate();
@@ -283,6 +295,6 @@ public class ProductDAO extends DBContext {
 
     // Hàm main (giữ nguyên)
     public static void main(String[] args) {
-        
+        // ... (code test của bạn) ...
     }
 }

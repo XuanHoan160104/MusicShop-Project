@@ -37,7 +37,7 @@ public class CategoryServlet extends HttpServlet {
             pageNumber = 1; // Nếu nhập bậy thì về trang 1
         }
         
-        int pageSize = 9; // Đặt cố định 9 sản phẩm/trang
+        int pageSize = 6; // Đặt cố định 6 sản phẩm/trang
 
         // 3. (C) gọi (DAO) để đếm tổng số sản phẩm
         ProductDAO productDAO = new ProductDAO();

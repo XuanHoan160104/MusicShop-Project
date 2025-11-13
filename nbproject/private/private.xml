@@ -6,6 +6,7 @@
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/cart.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/model/OrderHistoryItem.java</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/admin/controller/AddProductServlet.java</file>
+            <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/controller/StaticPageServlet.java</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/index.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/login.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/css/style.css</file>
@@ -14,17 +15,22 @@
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/controller/CategoryServlet.java</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/admin/sidebar_admin.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/controller/ChangePasswordServlet.java</file>
+            <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/chinh_sach_bao_hanh.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/footer.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/index.html</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/admin/controller/ManageUserServlet.java</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/dal/CategoryDAO.java</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/admin/order_detail.jsp</file>
+            <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/tin_tuc.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/admin/header_admin.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/category.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/admin/controller/DeleteUserServlet.java</file>
+            <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/admin/controller/ReportServlet.java</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/admin/add_product.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/dal/ProductDAO.java</file>
+            <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/lien_he.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/dal/OrderDAO.java</file>
+            <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/he_thong_cua_hang.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/checkout.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/admin/controller/AdminDashboardServlet.java</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/controller/CheckoutServlet.java</file>
@@ -56,6 +62,7 @@
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/dal/DBContext.java</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/admin/controller/ManageProductServlet.java</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/controller/RemoveCartServlet.java</file>
+            <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/gioi_thieu.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/admin/controller/BatchPrintServlet.java</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/admin/controller/UpdateStatusServlet.java</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/controller/ProfileServlet.java</file>
@@ -67,6 +74,7 @@
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/model/Category.java</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/header.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/admin/batch_print_view.jsp</file>
+            <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/web/admin/report.jsp</file>
             <file>file:/C:/Users/xhoan/OneDrive/Documents/NetBeansProjects/MusicShop/src/java/controller/DetailServlet.java</file>
         </group>
     </open-files>

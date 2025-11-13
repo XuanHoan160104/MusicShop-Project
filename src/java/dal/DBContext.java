@@ -30,14 +30,21 @@ public class DBContext {
             System.err.println("KẾT NỐI DATABASE THẤT BẠI: " + ex.getMessage());
         }
     }
-    
-    // Bạn có thể thêm một phương thức main để test kết nối ngay lập lức
+
+    // ✅ Thêm phương thức static để gọi trong try-with-resources
+    public static Connection getConnection() throws SQLException {
+        String dbURL = "jdbc:mysql://localhost:3306/music_shop_db";
+        String username = "root";
+        String password = "";
+        return DriverManager.getConnection(dbURL, username, password);
+    }
+
+    // Test kết nối
     public static void main(String[] args) {
-        DBContext db = new DBContext();
-        if (db.connection != null) {
-            System.out.println("Test kết nối thành công.");
-        } else {
-            System.out.println("Test kết nối thất bại.");
+        try (Connection con = DBContext.getConnection()) {
+            System.out.println("Test kết nối thành công!");
+        } catch (SQLException e) {
+            System.out.println("Lỗi kết nối: " + e.getMessage());
         }
     }
 }

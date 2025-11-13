@@ -41,9 +41,9 @@ public class SearchServlet extends HttpServlet {
         List<Category> categoryList = categoryDAO.getAllCategories();
 
         // 4. Đẩy dữ liệu sang View
-        request.setAttribute("productList", searchResult);   // Dùng tên "productList" để tái sử dụng category.jsp
-        request.setAttribute("categoryList", categoryList); // Cho sidebar
-        request.setAttribute("searchKeyword", keyword);      // Gửi lại từ khóa
+        request.setAttribute("productList", searchResult);   
+        request.setAttribute("categoryList", categoryList); 
+        request.setAttribute("searchKeyword", keyword);      
 
         // 5. Chuyển hướng tới View
         request.getRequestDispatcher("category.jsp").forward(request, response);
