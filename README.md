@@ -80,7 +80,9 @@
 1.  Mở **XAMPP Control Panel**, khởi động **Apache** và **MySQL**.
 2.  Truy cập `http://localhost/phpmyadmin`.
 3.  Tạo một CSDL mới với tên: `music_shop_db`.
-4.  Chọn CSDL `music_shop_db`, mở tab **SQL** và dán toàn bộ script SQL dưới đây vào để tạo bảng và dữ liệu mẫu (đã bao gồm tài khoản `admin` được băm):
+4.  --[music_shop_db.sql](https://github.com/user-attachments/files/23598353/music_shop_db.sql)
+
+5.  Chọn CSDL `music_shop_db`, mở tab **SQL** và dán toàn bộ script SQL dưới đây vào để tạo bảng và dữ liệu mẫu (đã bao gồm tài khoản `admin` được băm):
 
 <!-- end list -->
 
