@@ -39,6 +39,18 @@ public class ProductDAO extends DBContext {
                 p.setImage_url(rs.getString("image_url"));
                 p.setStock_quantity(rs.getInt("stock_quantity")); // <-- Đã có
                 p.setCategory_id(rs.getInt("category_id"));
+                try {
+                    p.setWarehouse_date(rs.getDate("warehouse_date"));
+                } catch (SQLException e) {
+                    // Nếu cột warehouse_date chưa tồn tại, set null
+                    p.setWarehouse_date(null);
+                }
+                try {
+                    p.setInventory_days_threshold(rs.getInt("inventory_days_threshold"));
+                } catch (SQLException e) {
+                    // Nếu cột inventory_days_threshold chưa tồn tại, set mặc định 30
+                    p.setInventory_days_threshold(30);
+                }
                 list.add(p);
             }
         } catch (SQLException ex) {
@@ -73,6 +85,16 @@ public class ProductDAO extends DBContext {
                 p.setImage_url(rs.getString("image_url"));
                 p.setStock_quantity(rs.getInt("stock_quantity")); // <-- Đã có
                 p.setCategory_id(rs.getInt("category_id"));
+                try {
+                    p.setWarehouse_date(rs.getDate("warehouse_date"));
+                } catch (SQLException e) {
+                    p.setWarehouse_date(null);
+                }
+                try {
+                    p.setInventory_days_threshold(rs.getInt("inventory_days_threshold"));
+                } catch (SQLException e) {
+                    p.setInventory_days_threshold(30);
+                }
                 return p;
             }
         } catch (SQLException | NumberFormatException ex) {
@@ -88,18 +110,23 @@ public class ProductDAO extends DBContext {
 
     /**
      * Lấy các sản phẩm nổi bật (là 8 sản phẩm BÁN CHẠY NHẤT)
+     * Chỉ tính những đơn hàng đã được giao (status = 'Shipped')
      * @return một danh sách (List) các đối tượng Product
      */
     public List<Product> getBestSellingProducts() {
         List<Product> list = new ArrayList<>();
-        // Câu SQL này JOIN bảng Products và OrderDetails,
+        // Câu SQL này JOIN bảng Products, OrderDetails và Orders,
+        // chỉ tính những đơn hàng đã được giao (status = 'Shipped'),
         // đếm tổng số lượng (quantity) đã bán của mỗi sản phẩm,
+        // chỉ lấy những sản phẩm đã bán ít nhất 1 lần,
         // sắp xếp giảm dần, và lấy 8 sản phẩm hàng đầu.
         String sql = "SELECT p.*, SUM(od.quantity) AS total_sold " +
                      "FROM Products p " +
-                     "JOIN OrderDetails od ON p.product_id = od.product_id " +
-                     "GROUP BY p.product_id " +
-                     "ORDER BY total_sold DESC " + // Sắp xếp theo tổng số bán được
+                     "INNER JOIN OrderDetails od ON p.product_id = od.product_id " +
+                     "INNER JOIN Orders o ON od.order_id = o.order_id " +
+                     "WHERE o.status = 'Shipped' " +
+                     "GROUP BY p.product_id, p.name, p.description, p.price, p.image_url, p.stock_quantity, p.category_id " +
+                     "ORDER BY total_sold DESC, p.product_id DESC " + // Sắp xếp theo tổng số bán được, nếu bằng nhau thì theo ID mới nhất
                      "LIMIT 8"; // Lấy 8 sản phẩm bán chạy nhất
 
         PreparedStatement st = null;
@@ -129,11 +156,41 @@ public class ProductDAO extends DBContext {
     // === CÁC HÀM CHO QUẢN LÝ SẢN PHẨM (ADMIN) ===
     // (Giữ nguyên các hàm getAllProducts, insertProduct, updateProduct, deleteProduct...)
     public List<Product> getAllProducts() { 
-        List<Product> list = new ArrayList<>(); String sql = "SELECT * FROM Products ORDER BY product_id DESC"; PreparedStatement st = null; ResultSet rs = null;
-        try { st = connection.prepareStatement(sql); rs = st.executeQuery();
-            while (rs.next()) { Product p = new Product(); p.setProduct_id(rs.getInt("product_id")); p.setName(rs.getString("name")); p.setDescription(rs.getString("description")); p.setPrice(rs.getDouble("price")); p.setImage_url(rs.getString("image_url")); p.setStock_quantity(rs.getInt("stock_quantity")); p.setCategory_id(rs.getInt("category_id")); list.add(p); }
-        } catch (SQLException ex) { Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, "Lỗi khi getAllProducts", ex);
-        } finally { try { if (rs != null) rs.close(); } catch (SQLException e) { /* ignored */ } try { if (st != null) st.close(); } catch (SQLException e) { /* ignored */ } }
+        List<Product> list = new ArrayList<>(); 
+        String sql = "SELECT * FROM Products ORDER BY product_id DESC"; 
+        PreparedStatement st = null; 
+        ResultSet rs = null;
+        try { 
+            st = connection.prepareStatement(sql); 
+            rs = st.executeQuery();
+            while (rs.next()) { 
+                Product p = new Product(); 
+                p.setProduct_id(rs.getInt("product_id")); 
+                p.setName(rs.getString("name")); 
+                p.setDescription(rs.getString("description")); 
+                p.setPrice(rs.getDouble("price")); 
+                p.setImage_url(rs.getString("image_url")); 
+                p.setStock_quantity(rs.getInt("stock_quantity")); 
+                p.setCategory_id(rs.getInt("category_id")); 
+                try {
+                    p.setWarehouse_date(rs.getDate("warehouse_date"));
+                } catch (SQLException e) {
+                    p.setWarehouse_date(null);
+                }
+                try {
+                    p.setInventory_days_threshold(rs.getInt("inventory_days_threshold"));
+                } catch (SQLException e) {
+                    // Nếu cột inventory_days_threshold chưa tồn tại, set mặc định 30
+                    p.setInventory_days_threshold(30);
+                }
+                list.add(p); 
+            }
+        } catch (SQLException ex) { 
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, "Lỗi khi getAllProducts", ex);
+        } finally { 
+            try { if (rs != null) rs.close(); } catch (SQLException e) { /* ignored */ } 
+            try { if (st != null) st.close(); } catch (SQLException e) { /* ignored */ } 
+        }
         return list;
     }
     public void insertProduct(String name, String description, double price, String imageUrl, int stock, int categoryId) { 
@@ -148,6 +205,57 @@ public class ProductDAO extends DBContext {
         } catch (SQLException ex) { Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, "Lỗi khi updateProduct", ex);
         } finally {  try { if (st != null) st.close(); } catch (SQLException e) { /* ignored */ } }
     }
+    
+    public void updateProductWithWarehouseDate(int id, String name, String description, double price, String imageUrl, int stock, int categoryId, java.sql.Date warehouseDate) { 
+        String sql = "UPDATE Products SET name = ?, description = ?, price = ?, image_url = ?, stock_quantity = ?, category_id = ?, warehouse_date = ? WHERE product_id = ?"; 
+        PreparedStatement st = null;
+        try { 
+            st = connection.prepareStatement(sql); 
+            st.setString(1, name); 
+            st.setString(2, description); 
+            st.setDouble(3, price); 
+            st.setString(4, imageUrl); 
+            st.setInt(5, stock); 
+            st.setInt(6, categoryId);
+            if (warehouseDate != null) {
+                st.setDate(7, warehouseDate);
+            } else {
+                st.setNull(7, java.sql.Types.DATE);
+            }
+            st.setInt(8, id); 
+            st.executeUpdate();
+        } catch (SQLException ex) { 
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, "Lỗi khi updateProductWithWarehouseDate", ex);
+        } finally {  
+            try { if (st != null) st.close(); } catch (SQLException e) { /* ignored */ } 
+        }
+    }
+    
+    public void updateProductWithWarehouseDateAndThreshold(int id, String name, String description, double price, String imageUrl, int stock, int categoryId, java.sql.Date warehouseDate, int inventoryDaysThreshold) { 
+        String sql = "UPDATE Products SET name = ?, description = ?, price = ?, image_url = ?, stock_quantity = ?, category_id = ?, warehouse_date = ?, inventory_days_threshold = ? WHERE product_id = ?"; 
+        PreparedStatement st = null;
+        try { 
+            st = connection.prepareStatement(sql); 
+            st.setString(1, name); 
+            st.setString(2, description); 
+            st.setDouble(3, price); 
+            st.setString(4, imageUrl); 
+            st.setInt(5, stock); 
+            st.setInt(6, categoryId);
+            if (warehouseDate != null) {
+                st.setDate(7, warehouseDate);
+            } else {
+                st.setNull(7, java.sql.Types.DATE);
+            }
+            st.setInt(8, inventoryDaysThreshold > 0 ? inventoryDaysThreshold : 30); // Mặc định 30 nếu <= 0
+            st.setInt(9, id); 
+            st.executeUpdate();
+        } catch (SQLException ex) { 
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, "Lỗi khi updateProductWithWarehouseDateAndThreshold", ex);
+        } finally {  
+            try { if (st != null) st.close(); } catch (SQLException e) { /* ignored */ } 
+        }
+    }
     public void deleteProduct(int id) { 
         String deleteOrderDetailsSQL = "DELETE FROM OrderDetails WHERE product_id = ?"; String deleteProductSQL = "DELETE FROM Products WHERE product_id = ?"; PreparedStatement st1 = null; PreparedStatement st2 = null;
         try { st1 = connection.prepareStatement(deleteOrderDetailsSQL); st1.setInt(1, id); st1.executeUpdate();
@@ -157,6 +265,53 @@ public class ProductDAO extends DBContext {
     }
 
     // === HÀM TÌM KIẾM SẢN PHẨM ===
+    
+    /**
+     * Tìm kiếm sản phẩm theo tên hoặc giá
+     * @param keyword từ khóa tìm kiếm (có thể là tên hoặc giá)
+     * @return danh sách sản phẩm
+     */
+    public List<Product> searchProducts(String keyword) {
+        List<Product> list = new ArrayList<>();
+        String sql = "SELECT * FROM Products WHERE name LIKE ? OR CAST(price AS CHAR) LIKE ? ORDER BY product_id DESC";
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = connection.prepareStatement(sql);
+            String searchPattern = "%" + keyword + "%";
+            st.setString(1, searchPattern);
+            st.setString(2, searchPattern);
+            rs = st.executeQuery();
+            while (rs.next()) {
+                Product p = new Product();
+                p.setProduct_id(rs.getInt("product_id"));
+                p.setName(rs.getString("name"));
+                p.setDescription(rs.getString("description"));
+                p.setPrice(rs.getDouble("price"));
+                p.setImage_url(rs.getString("image_url"));
+                p.setStock_quantity(rs.getInt("stock_quantity"));
+                p.setCategory_id(rs.getInt("category_id"));
+                try {
+                    p.setWarehouse_date(rs.getDate("warehouse_date"));
+                } catch (SQLException e) {
+                    p.setWarehouse_date(null);
+                }
+                try {
+                    p.setInventory_days_threshold(rs.getInt("inventory_days_threshold"));
+                } catch (SQLException e) {
+                    // Nếu cột inventory_days_threshold chưa tồn tại, set mặc định 30
+                    p.setInventory_days_threshold(30);
+                }
+                list.add(p);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, "Lỗi khi searchProducts", ex);
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) { /* ignored */ }
+            try { if (st != null) st.close(); } catch (SQLException e) { /* ignored */ }
+        }
+        return list;
+    }
     
     public List<Product> searchByName(String keyword) {
         List<Product> list = new ArrayList<>();

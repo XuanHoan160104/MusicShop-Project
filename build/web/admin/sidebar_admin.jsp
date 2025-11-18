@@ -37,6 +37,32 @@
                     <i class="fas fa-users me-2"></i>Quản lý Người dùng
                 </a>
             </li>
+            <li class="nav-item">
+                 <a class="nav-link ${activePage == 'news' ? 'active' : ''}" 
+                    href="${pageContext.request.contextPath}/admin/news">
+                    <i class="fas fa-newspaper me-2"></i>Quản lý Tin tức
+                </a>
+            </li>
+            <li class="nav-item">
+                 <a class="nav-link ${activePage == 'vouchers' ? 'active' : ''}" 
+                    href="${pageContext.request.contextPath}/admin/vouchers">
+                    <i class="fas fa-ticket-alt me-2"></i>Quản lý Mã giảm giá
+                </a>
+            </li>
+            <li class="nav-item">
+                 <a class="nav-link ${activePage == 'chat' ? 'active' : ''}" 
+                    href="${pageContext.request.contextPath}/admin/chat">
+                    <i class="fas fa-comments me-2"></i>Quản lý Chat
+                    <c:choose>
+                        <c:when test="${not empty requestScope.unreadCount && requestScope.unreadCount > 0}">
+                            <span class="badge bg-danger ms-2">${requestScope.unreadCount}</span>
+                        </c:when>
+                        <c:when test="${not empty sessionScope.unreadCount && sessionScope.unreadCount > 0}">
+                            <span class="badge bg-danger ms-2">${sessionScope.unreadCount}</span>
+                        </c:when>
+                    </c:choose>
+                </a>
+            </li>
              <%-- 
                 Link Quản lý Danh mục (chưa tạo)
             <li class="nav-item">

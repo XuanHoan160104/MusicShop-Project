@@ -3,6 +3,8 @@
 --%>
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -31,41 +33,62 @@
                     <h2>Tin tức & Khuyến mãi</h2>
                     <hr>
                     
-                    <%-- Mẫu Bài đăng 1 --%>
-                    <div class="card mb-3">
-                        <div class="row g-0">
-                            <div class="col-md-4">
-                                <img src="${pageContext.request.contextPath}/images/guitar1.jpg" class="img-fluid rounded-start" alt="Tin tức 1">
+                    <c:choose>
+                        <c:when test="${empty requestScope.newsList or requestScope.newsList.size() == 0}">
+                            <div class="alert alert-info">
+                                Hiện tại chưa có tin tức nào.
                             </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title">Khuyến mãi cuối năm: Giảm giá 50% cho Guitar Acoustic</h5>
-                                    <p class="card-text">Chào đón mùa lễ hội, MusicShop tưng bừng giảm giá sốc cho tất cả các dòng đàn Guitar Acoustic Yamaha. Đây là cơ hội tuyệt vời...</p>
-                                    <p class="card-text"><small class="text-muted">Đăng ngày 01-11-2025</small></p>
-                                    <a href="#" class="btn btn-primary btn-sm">Đọc tiếp</a>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach items="${requestScope.newsList}" var="news">
+                                <div class="card mb-3">
+                                    <div class="row g-0">
+                                        <c:if test="${not empty news.image_url}">
+                                            <div class="col-md-4">
+                                                <img src="${pageContext.request.contextPath}/${news.image_url}" class="img-fluid rounded-start" alt="${news.title}">
+                                            </div>
+                                        </c:if>
+                                        <div class="col-md-${not empty news.image_url ? '8' : '12'}">
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    <a href="${pageContext.request.contextPath}/news-detail?newsId=${news.news_id}" 
+                                                       class="text-decoration-none text-dark">
+                                                        ${news.title}
+                                                    </a>
+                                                </h5>
+                                                <p class="card-text">
+                                                    <c:choose>
+                                                        <c:when test="${fn:length(news.content) > 150}">
+                                                            ${fn:substring(news.content, 0, 150)}...
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            ${news.content}
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </p>
+                                                <p class="card-text">
+                                                    <small class="text-muted">
+                                                        Đăng ngày <fmt:formatDate value="${news.created_at}" pattern="dd-MM-yyyy" />
+                                                    </small>
+                                                </p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <c:if test="${not empty news.voucher_id}">
+                                                        <span class="badge bg-success">
+                                                            <i class="fas fa-tag me-1"></i>Có mã giảm giá kèm theo
+                                                        </span>
+                                                    </c:if>
+                                                    <a href="${pageContext.request.contextPath}/news-detail?newsId=${news.news_id}" 
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        Xem chi tiết <i class="fas fa-arrow-right ms-1"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <%-- Mẫu Bài đăng 2 --%>
-                    <div class="card mb-3">
-                        <div class="row g-0">
-                            <div class="col-md-4">
-                                <img src="${pageContext.request.contextPath}/images/piano1.jpg" class="img-fluid rounded-start" alt="Tin tức 2">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title">5 mẹo tự học Piano hiệu quả tại nhà cho người mới bắt đầu</h5>
-                                    <p class="card-text">Bạn đam mê Piano nhưng không có thời gian đến lớp? Đừng lo, 5 mẹo nhỏ sau đây sẽ giúp bạn xây dựng nền tảng vững chắc...</p>
-                                    <p class="card-text"><small class="text-muted">Đăng ngày 28-10-2025</small></p>
-                                    <a href="#" class="btn btn-primary btn-sm">Đọc tiếp</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <%-- (Sau này bạn có thể tạo CSDL Bảng 'Articles' và CRUD cho Admin) --%>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
                     
                 </div>
             </div>

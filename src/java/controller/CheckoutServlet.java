@@ -2,10 +2,13 @@ package controller;
 
 import dal.CategoryDAO;
 import dal.OrderDAO;
+import dal.VoucherDAO;
 import model.CartItem;
 import model.Category;
 import model.User;
+import model.Voucher;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -62,19 +65,50 @@ public class CheckoutServlet extends HttpServlet {
             return;
         }
 
-        // === SỬA TẠI ĐÂY: Đọc thông tin giao hàng từ form ===
+        // === Đọc thông tin giao hàng từ form ===
         String shipName = request.getParameter("shipping_name");
         String shipPhone = request.getParameter("shipping_phone");
         String shipAddress = request.getParameter("shipping_address");
+        String voucherCode = request.getParameter("voucher_code"); // Mã giảm giá
         // ================================================
 
-        // 3. (C) gọi (DAO) để thực hiện logic Transaction
+        // 3. Xử lý voucher nếu có
+        Integer voucherId = null;
+        double discountAmount = 0.0;
+        
+        if (voucherCode != null && !voucherCode.trim().isEmpty()) {
+            VoucherDAO voucherDAO = new VoucherDAO();
+            Voucher voucher = voucherDAO.validateVoucherForUse(voucherCode.trim(), user.getUser_id());
+            
+            if (voucher != null) {
+                // Tính tổng tiền giỏ hàng
+                double totalAmount = 0;
+                for (CartItem item : cart.values()) {
+                    totalAmount += item.getTotalItemPrice();
+                }
+                
+                // Tính số tiền giảm giá
+                discountAmount = voucherDAO.calculateDiscount(voucher, totalAmount);
+                voucherId = voucher.getVoucher_id();
+            } else {
+                // Voucher không hợp lệ
+                CategoryDAO categoryDAO = new CategoryDAO();
+                List<Category> categoryList = categoryDAO.getAllCategories();
+                request.setAttribute("categoryList", categoryList);
+                request.setAttribute("error", "Mã giảm giá không hợp lệ, đã hết hạn hoặc bạn đã sử dụng mã này rồi!");
+                request.setAttribute("voucherError", "Mã giảm giá không hợp lệ, đã hết hạn hoặc bạn đã sử dụng mã này rồi!");
+                request.getRequestDispatcher("checkout.jsp").forward(request, response);
+                return;
+            }
+        }
+
+        // 4. (C) gọi (DAO) để thực hiện logic Transaction
         OrderDAO orderDAO = new OrderDAO();
         
-        // === SỬA TẠI ĐÂY: Truyền 3 biến mới vào hàm ===
-        boolean success = orderDAO.createOrder(user, cart, shipName, shipPhone, shipAddress);
+        // === Truyền voucher vào hàm ===
+        boolean success = orderDAO.createOrder(user, cart, shipName, shipPhone, shipAddress, voucherId, discountAmount);
 
-        // 4. Xử lý kết quả
+        // 5. Xử lý kết quả
         if (success) {
             // Đặt hàng thành công
             session.removeAttribute("cart");

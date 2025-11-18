@@ -21,18 +21,42 @@ public class UpdateStatusServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // 1. Lấy dữ liệu từ form (dashboard.jsp)
-        // Dùng Integer.parseInt để đổi chuỗi (String) sang số (int)
-        int orderId = Integer.parseInt(request.getParameter("orderId"));
-        String newStatus = request.getParameter("newStatus");
-        
-        // 2. (C) gọi (DAO)
-        OrderDAO orderDAO = new OrderDAO();
-        orderDAO.updateOrderStatus(orderId, newStatus);
-        
-        // 3. Chuyển hướng (redirect) admin về lại trang dashboard
-        // Gửi redirect về "dashboard" (nó sẽ tự hiểu là /admin/dashboard)
-        response.sendRedirect("dashboard");
+        try {
+            // 1. Lấy dữ liệu từ form (dashboard.jsp)
+            int orderId = Integer.parseInt(request.getParameter("orderId"));
+            String newStatus = request.getParameter("newStatus");
+            
+            // 2. (C) gọi (DAO)
+            OrderDAO orderDAO = new OrderDAO();
+            boolean success = orderDAO.updateOrderStatus(orderId, newStatus);
+            
+            // 3. Xác định trang redirect
+            String redirectUrl = "dashboard"; // Mặc định về dashboard
+            
+            // Nếu có tham số redirectUrl từ form, dùng nó
+            String redirectParam = request.getParameter("redirectUrl");
+            if (redirectParam != null && !redirectParam.isEmpty()) {
+                redirectUrl = redirectParam;
+            }
+            // Nếu không có, kiểm tra referer
+            else {
+                String referer = request.getHeader("Referer");
+                if (referer != null && referer.contains("/admin/report") && "Shipped".equals(newStatus) && success) {
+                    redirectUrl = "report?updated=true&orderId=" + orderId;
+                }
+            }
+            
+            // 4. Chuyển hướng
+            response.sendRedirect(redirectUrl);
+            
+        } catch (NumberFormatException e) {
+            // Xử lý lỗi nếu orderId không hợp lệ
+            response.sendRedirect("dashboard?error=invalid_order");
+        } catch (Exception e) {
+            // Xử lý lỗi khác
+            e.printStackTrace();
+            response.sendRedirect("dashboard?error=update_failed");
+        }
     }
     
     // Không cần dùng doGet, vì form của chúng ta dùng method="post"

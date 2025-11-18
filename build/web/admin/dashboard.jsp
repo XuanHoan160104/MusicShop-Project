@@ -143,9 +143,10 @@
                                         </td>
                                         <td>
                                             <div class="d-flex">
-                                                <form action="${pageContext.request.contextPath}/admin/update-status" method="post" class="d-flex">
+                                                <form action="${pageContext.request.contextPath}/admin/update-status" method="post" class="d-flex" id="updateStatusForm_${o.order_id}">
                                                     <input type="hidden" name="orderId" value="${o.order_id}">
-                                                    <select name="newStatus" class="form-select form-select-sm" style="width: 120px;">
+                                                    <input type="hidden" name="redirectUrl" id="redirectUrl_${o.order_id}" value="">
+                                                    <select name="newStatus" class="form-select form-select-sm" style="width: 120px;" onchange="handleStatusChange(${o.order_id}, this.value)">
                                                         <option value="Pending" ${o.status == 'Pending' ? 'selected' : ''}>Chờ xử lý</option>
                                                         <option value="Processing" ${o.status == 'Processing' ? 'selected' : ''}>Đang giao hàng</option>
                                                         
@@ -175,6 +176,16 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         
         <script>
+            // SỬA: Xử lý khi thay đổi status - nếu chọn "Đã giao" thì có thể redirect về report
+            function handleStatusChange(orderId, newStatus) {
+                // Nếu chọn "Đã giao", có thể set redirect về report
+                const redirectInput = document.getElementById('redirectUrl_' + orderId);
+                if (redirectInput && newStatus === 'Shipped') {
+                    // Có thể thêm logic để redirect về report nếu muốn
+                    // redirectInput.value = 'report?updated=true';
+                }
+            }
+            
             document.getElementById('selectAllCheckbox').addEventListener('click', function(event) {
                 var checkboxes = document.querySelectorAll('.order-checkbox');
                 for (var checkbox of checkboxes) {

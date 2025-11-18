@@ -122,6 +122,38 @@ public class UserDAO extends DBContext {
     // === CÁC HÀM CHO QUẢN LÝ NGƯỜI DÙNG ===
 
     /**
+     * Lấy user theo ID
+     * @param userId ID của user
+     * @return User nếu tìm thấy, null nếu không
+     */
+    public User getUserById(int userId) {
+        String sql = "SELECT * FROM Users WHERE user_id = ?";
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = connection.prepareStatement(sql);
+            st.setInt(1, userId);
+            rs = st.executeQuery();
+            if (rs.next()) {
+                User u = new User();
+                u.setUser_id(rs.getInt("user_id"));
+                u.setUsername(rs.getString("username"));
+                u.setEmail(rs.getString("email"));
+                u.setFull_name(rs.getString("full_name"));
+                u.setAddress(rs.getString("address"));
+                u.setRole(rs.getString("role"));
+                return u;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, "Lỗi SQL khi getUserById", ex);
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) { /* ignored */ }
+            try { if (st != null) st.close(); } catch (SQLException e) { /* ignored */ }
+        }
+        return null;
+    }
+
+    /**
      * Lấy TẤT CẢ người dùng từ CSDL
      * @return Danh sách tất cả người dùng
      */

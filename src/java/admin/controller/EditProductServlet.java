@@ -71,6 +71,8 @@ public class EditProductServlet extends HttpServlet {
         String name = "";
         String description = "";
         String oldImageUrl = ""; // Lấy đường dẫn ảnh cũ
+        java.sql.Date warehouseDate = null;
+        int inventoryDaysThreshold = 30; // Mặc định 30 ngày
         
         try {
             id = Integer.parseInt(getStringFromPart(request.getPart("id")));
@@ -80,6 +82,31 @@ public class EditProductServlet extends HttpServlet {
             name = getStringFromPart(request.getPart("name"));
             description = getStringFromPart(request.getPart("description"));
             oldImageUrl = getStringFromPart(request.getPart("oldImageUrl")); // Lấy ảnh cũ từ input ẩn
+            
+            // Xử lý warehouse_date
+            String warehouseDateStr = getStringFromPart(request.getPart("warehouse_date"));
+            if (warehouseDateStr != null && !warehouseDateStr.trim().isEmpty()) {
+                try {
+                    warehouseDate = java.sql.Date.valueOf(warehouseDateStr);
+                } catch (IllegalArgumentException e) {
+                    System.err.println("Lỗi parse warehouse_date: " + e.getMessage());
+                    warehouseDate = null;
+                }
+            }
+            
+            // Xử lý inventory_days_threshold
+            String thresholdStr = getStringFromPart(request.getPart("inventory_days_threshold"));
+            if (thresholdStr != null && !thresholdStr.trim().isEmpty()) {
+                try {
+                    inventoryDaysThreshold = Integer.parseInt(thresholdStr);
+                    if (inventoryDaysThreshold <= 0) {
+                        inventoryDaysThreshold = 30; // Mặc định 30 nếu <= 0
+                    }
+                } catch (NumberFormatException e) {
+                    System.err.println("Lỗi parse inventory_days_threshold: " + e.getMessage());
+                    inventoryDaysThreshold = 30;
+                }
+            }
         } catch (Exception e) {
             System.err.println("Lỗi parse dữ liệu khi sửa sản phẩm: " + e.getMessage());
         }
@@ -112,7 +139,8 @@ public class EditProductServlet extends HttpServlet {
 
         // === BƯỚC 3: GỌI DAO ĐỂ CẬP NHẬT CSDL ===
         ProductDAO productDAO = new ProductDAO();
-        productDAO.updateProduct(id, name, description, price, dbPath, stock, categoryId);
+        // Sử dụng method mới có warehouse_date và inventory_days_threshold
+        productDAO.updateProductWithWarehouseDateAndThreshold(id, name, description, price, dbPath, stock, categoryId, warehouseDate, inventoryDaysThreshold);
 
         // 4. Chuyển hướng về trang quản lý
         response.sendRedirect("manage-products");

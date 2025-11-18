@@ -30,10 +30,10 @@ public class SearchServlet extends HttpServlet {
             keyword = ""; // Tránh lỗi NullPointerException
         }
 
-        // 2. Gọi DAO để tìm sản phẩm
+        // 2. Gọi DAO để tìm sản phẩm (tìm theo tên hoặc giá)
         ProductDAO productDAO = new ProductDAO();
-        // **Quan trọng:** Đảm bảo bạn có hàm `searchByName(String keyword)` trong ProductDAO.java
-        List<Product> searchResult = productDAO.searchByName(keyword.trim()); // Xóa khoảng trắng thừa
+        // Sử dụng searchProducts để tìm theo cả tên và giá
+        List<Product> searchResult = productDAO.searchProducts(keyword.trim()); // Xóa khoảng trắng thừa
 
         // 3. Gọi DAO để lấy danh mục (cho sidebar)
         CategoryDAO categoryDAO = new CategoryDAO();

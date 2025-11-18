@@ -69,7 +69,7 @@
                            <i class="fas fa-arrow-left me-1"></i> Quay lại
                         </a>
                         <%-- Nút In: Gọi JavaScript window.print() --%>
-                        <button class.="btn btn-sm btn-primary" onclick="window.print();">
+                        <button class="btn btn-sm btn-primary" onclick="window.print();">
                             <i class="fas fa-print me-1"></i> In đơn hàng
                         </button>
                     </div>

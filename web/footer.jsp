@@ -30,3 +30,6 @@
         <p>&copy; 2025 Bản quyền thuộc về Nhạc cụ Xuân Hoàn (Dự án NetBeans MVC)</p>
     </div>
 </footer>
+
+<%-- Include Chat Widget cho người dùng --%>
+<jsp:include page="chat_widget.jsp"></jsp:include>

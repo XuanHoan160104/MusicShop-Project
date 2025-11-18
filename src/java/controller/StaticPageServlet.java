@@ -1,7 +1,9 @@
 package controller;
 
 import dal.CategoryDAO;
+import dal.NewsDAO;
 import model.Category;
+import model.News;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -52,6 +54,10 @@ public class StaticPageServlet extends HttpServlet {
                 destinationPage = "chinh_sach_bao_hanh.jsp";
                 break;
             case "/tin-tuc":
+                // Load tin tức đã published cho trang tin tức
+                NewsDAO newsDAO = new NewsDAO();
+                List<News> newsList = newsDAO.getPublishedNews();
+                request.setAttribute("newsList", newsList);
                 destinationPage = "tin_tuc.jsp";
                 break;
             case "/lien-he":

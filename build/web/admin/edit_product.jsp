@@ -5,6 +5,7 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="model.Product" %>
 
 <!DOCTYPE html>
 <html>
@@ -54,8 +55,59 @@
                             <input type="number" step="1000" class="form-control" id="price" name="price" value="${p.price}" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="stock" class="form-label">Số lượng tồn kho (*):</label>
+                            <label for="stock" class="form-label">Trong kho (*):</label>
                             <input type="number" class="form-control" id="stock" name="stock" value="${p.stock_quantity}" required>
+                            <small class="text-muted">Số lượng sản phẩm hiện có trong kho</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="warehouse_date" class="form-label">Ngày nhập kho:</label>
+                            <input type="date" class="form-control" id="warehouse_date" name="warehouse_date" 
+                                   value="<c:if test='${p.warehouse_date != null}'><fmt:formatDate value='${p.warehouse_date}' pattern='yyyy-MM-dd'/></c:if>">
+                            <small class="text-muted">Ngày sản phẩm được nhập vào kho</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="inventory_days_threshold" class="form-label">Số ngày để tính tồn kho:</label>
+                            <input type="number" class="form-control" id="inventory_days_threshold" name="inventory_days_threshold" 
+                                   value="${p.inventory_days_threshold > 0 ? p.inventory_days_threshold : 30}" min="1" required>
+                            <small class="text-muted">Số ngày tùy chỉnh để hệ thống tự động tính tồn kho (ví dụ: 1, 30, 60 ngày...)</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Tồn kho (tự động tính):</label>
+                            <div class="form-control bg-light" style="padding: 0.375rem 0.75rem;">
+                                <c:choose>
+                                    <c:when test="${p.warehouse_date != null}">
+                                        <%
+                                            model.Product product = (model.Product) pageContext.getAttribute("p");
+                                            long daysInStock = 0;
+                                            int threshold = product.getInventory_days_threshold() > 0 ? product.getInventory_days_threshold() : 30;
+                                            if (product.getWarehouse_date() != null) {
+                                                java.util.Date now = new java.util.Date();
+                                                java.sql.Date warehouseDate = product.getWarehouse_date();
+                                                long diffInMillis = now.getTime() - warehouseDate.getTime();
+                                                daysInStock = diffInMillis / (1000 * 60 * 60 * 24);
+                                            }
+                                            pageContext.setAttribute("daysInStock", daysInStock);
+                                            pageContext.setAttribute("threshold", threshold);
+                                        %>
+                                        <c:choose>
+                                            <c:when test="${daysInStock >= threshold && p.stock_quantity > 0}">
+                                                <span class="text-success"><strong>${p.stock_quantity}</strong> (Đã trong kho ${daysInStock} ngày, ngưỡng: ${threshold} ngày)</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="text-muted">- (Chưa đủ ${threshold} ngày hoặc hết hàng. Hiện tại: ${daysInStock} ngày)</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="text-muted">- (Chưa có ngày nhập kho)</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <small class="text-muted">Tồn kho sẽ hiển thị khi sản phẩm đã trong kho ≥ số ngày đã cài đặt và còn hàng</small>
                         </div>
                     </div>
                     

@@ -27,8 +27,18 @@ public class ManageProductServlet extends HttpServlet {
         ProductDAO productDAO = new ProductDAO();
         CategoryDAO categoryDAO = new CategoryDAO(); 
 
-        // 1. Lấy danh sách TẤT CẢ sản phẩm
-        List<Product> productList = productDAO.getAllProducts();
+        // 1. Kiểm tra xem có tham số tìm kiếm không
+        String searchKeyword = request.getParameter("search");
+        List<Product> productList;
+        
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            // Nếu có từ khóa tìm kiếm, tìm kiếm theo tên hoặc giá
+            productList = productDAO.searchProducts(searchKeyword.trim());
+            request.setAttribute("searchKeyword", searchKeyword.trim());
+        } else {
+            // Nếu không có, lấy tất cả sản phẩm
+            productList = productDAO.getAllProducts();
+        }
 
         // 2. Lấy danh sách TẤT CẢ danh mục
         List<Category> categoryList = categoryDAO.getAllCategories();

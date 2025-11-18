@@ -13,6 +13,7 @@
         <title>Giỏ hàng - Nhạc cụ Vĩnh Phúc</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     </head>
     <body>
 
@@ -100,7 +101,12 @@
                                 Tổng cộng: 
                                 <fmt:formatNumber value="${totalCartPrice}" type="currency" currencySymbol="đ"/>
                             </h4>
-                            <a href="${pageContext.request.contextPath}/checkout" class="btn btn-success btn-lg mt-3">Tiến hành Thanh toán</a>
+                            <div class="mt-3">
+                                <a href="${pageContext.request.contextPath}/home" class="btn btn-outline-primary btn-lg me-2">
+                                    <i class="fas fa-arrow-left me-1"></i> Tiếp tục lựa sản phẩm
+                                </a>
+                                <a href="${pageContext.request.contextPath}/checkout" class="btn btn-success btn-lg">Tiến hành Thanh toán</a>
+                            </div>
                         </div>
                     </c:if>
                 </div>

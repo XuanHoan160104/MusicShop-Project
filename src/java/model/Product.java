@@ -1,5 +1,7 @@
 package model;
 
+import java.sql.Date;
+
 /**
  * Đây là Model (M)
  * Đại diện cho một đối tượng "Product" (Sản phẩm)
@@ -12,6 +14,8 @@ public class Product {
     private String image_url;
     private int stock_quantity; // Tồn kho
     private int category_id;
+    private Date warehouse_date; // Ngày nhập kho
+    private int inventory_days_threshold; // Số ngày tùy chỉnh để tính tồn kho (mặc định 30)
 
     // Constructor rỗng
     public Product() {
@@ -86,5 +90,21 @@ public class Product {
 
     public void setCategory_id(int category_id) {
         this.category_id = category_id;
+    }
+
+    public Date getWarehouse_date() {
+        return warehouse_date;
+    }
+
+    public void setWarehouse_date(Date warehouse_date) {
+        this.warehouse_date = warehouse_date;
+    }
+
+    public int getInventory_days_threshold() {
+        return inventory_days_threshold;
+    }
+
+    public void setInventory_days_threshold(int inventory_days_threshold) {
+        this.inventory_days_threshold = inventory_days_threshold;
     }
 }
