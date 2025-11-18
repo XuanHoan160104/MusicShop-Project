@@ -510,7 +510,8 @@ ALTER TABLE `users`
 ALTER TABLE `vouchers`
   MODIFY `voucher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
---
+--[music_shop_db.sql](https://github.com/user-attachments/files/23598353/music_shop_db.sql)
+
 -- AUTO_INCREMENT cho bảng `voucher_usage`
 --
 ALTER TABLE `voucher_usage`
